@@ -1,0 +1,14 @@
+<!-- 5. Output the burger boolean and devoured number to the page for all the burgers. -->
+<ul>
+  {{#each burger_data}}
+    <li>
+      <p>burger: {{burger_name}}</p>
+      <p>devoured: {{devoured}}</p>
+
+    </li>
+  {{/each}}
+<form method = "POST" action = "/api/burgers">
+    <input type="text" id="burger" name ="burger" >
+    <button type="submit">Add Burger</button>
+</form>
+</ul>

@@ -18,30 +18,35 @@ app.use(express.json());
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-var connection = mysql.createConnection({
+/*var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
   password: "#MySQLRoot1234",
   database: "burgers_db"
 });
+*/
+var connection = require ("./config/connection.js");
 
-connection.connect(function(err) {
+/*connection.connect(function(err) {
   if (err) {
     console.error("error connecting: " + err.stack);
     return;
   }
   console.log("connected as id " + connection.threadId);
 });
-
+*/
 // Serve index.handlebars to the root route.
-app.get("/", function(req, res) {
-  connection.query("SELECT * FROM burgers;", function(err, data) {
-    if (err) {
-      return res.status(500).end();
-    }
-
-    res.render("index", { burgers: data });
+/*app.get("/", function(req, res) {
+    // Handlebars requires an object to be sent to the burger handlebars file.
+    console.log("hello....burger.....  ;)");
+    // Lucky for us, burger is an object!
+  burger.all(function (data) {
+    var devoured = {
+      burger_data: data
+    };
+    console.log(devoured);
+    res.render("index", devoured);
   });
 });
 
@@ -58,7 +63,16 @@ app.get("/:id", function(req, res) {
 });
 
 app.post("/api/burgers", function(req, res) {
-  connection.query("INSERT INTO burgers (burger_name, devoured) VALUES (?, ?)", [req.body.burger_name, req.body.devoured], function(
+  burger.create(["burger_name"], [req.body.burger], function(){
+    burger.all(function (data) {
+      var devoured = {
+        burger_data: data
+      };
+      console.log(devoured);
+      res.render("index", devoured);
+   });
+  })
+ /* connection.query("INSERT INTO burgers (burger_name, devoured) VALUES (?, ?)", [req.body.burger_name, req.body.devoured], function(
     err,
     result
   ) {
@@ -68,8 +82,7 @@ app.post("/api/burgers", function(req, res) {
     }
 
     // Send back the ID of the new burger
-    res.json({ id: result.insertId });
-  });
+    
 });
 
 app.delete("/api/burgers/:id", function(req, res) {
@@ -85,6 +98,13 @@ app.delete("/api/burgers/:id", function(req, res) {
     res.status(200).end();
 
   });
+});
+var burger = require("./models/burger.js");
+app.get("/", function(req, res) {
+
+
+  // 1. send the burger object from the animals array to the burger handlebars file.
+  //res.render("views/index", devoured);
 });
 
 // Update a burger by an id and then redirect to the root route.
@@ -111,4 +131,14 @@ app.put("/api/burgers/:id", function(req, res) {
 app.listen(PORT, function() {
   // Log (server-side) when our server has started
   console.log("Server listening on: http://localhost:" + PORT);
+});
+*/
+
+
+var routes = require("./controllers/burgers_controller.js");
+
+app.use(routes);
+
+app.listen(PORT, function() {
+  console.log("Listening on port:%s", PORT);
 });
